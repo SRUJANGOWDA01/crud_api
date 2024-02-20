@@ -1,5 +1,9 @@
 const express = require('express')
-const PORT = 4500
+
+//settings to access .env variables
+require('dotenv').config()
+
+const PORT = process.env.PORT
 
 // instance of express
 const app = express()
@@ -31,7 +35,7 @@ app.delete(`/api/user/:id`, function(req,res) {
 })
 
 // default route
-app.all('**', (req,res)=> {
+app.all('*', (req,res)=> {
     res.status(404).json({ status: true, msg: `requested path not found`})
 })
 
