@@ -11,7 +11,7 @@ const { readAll, readSingle, createUser, updateUser, deleteUser } = require('../
   userRouter.get(`/all`, readAll)
 
   //read single -> /api/user/single/123
-  userRouter.get(`/single/:id`, readSingle)
+  userRouter.get(`/single/:userId`, readSingle)
 
   //create new user => post request -> /api/user/create
   userRouter.post(`/create`,createUser)

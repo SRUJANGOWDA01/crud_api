@@ -1,12 +1,21 @@
 const User = require('../model/user')
 
 //read all users
-const readAll = function(req,res){
-    res.status(200).json({ status: true, msg: " read all users"})
+const readAll = async (req,res) => {
+    let users = await User.find()
+    
+    res.status(200).json({ status: true, length: users.length, users })
 }
 //read single users
-const readSingle = function(req,res){
-    res.status(200).json({ status: true, msg: " read single user"})
+const readSingle = async (req,res) => {
+    //to read any ref from router parameter 
+    let { userId } = req.params
+    
+    let single = await User.findById({ _id: userId})
+        if(!single)
+           return res.status(404).json({ status: false, msg: `Requested id not found`})
+
+    res.status(200).json({ status: true, user: single})
 }
 
 //create user
@@ -33,13 +42,31 @@ const createUser = async (req,res) => {
 
 
 // update user
-const updateUser = function(req,res) {
-    res.status(201).json({ status: true, msg: "update existing user"})
+const updateUser = async (req,res) =>  {
+    let { id } = req.params
+
+    // weather user id exists or not
+    let extUser = await User.findById(id)
+      if(!extUser)
+         return res.status(404).json({ status: false, msg: `Requested user id not found`})
+
+         await User.findByIdAndUpdate({_id: id }, req.body)
+
+    res.status(201).json({ status: true, msg: "Successfully Updated User data"})
 }
 
 //delete user
-const deleteUser = function(req,res) {
-    res.status(201).json({ status: true, msg: "delete existing user"})
+const deleteUser = async (req,res) => {
+    let { id } = req.params
+    
+    //weather user exists or not
+    let extUser = await User.findById(id)
+        if(!extUser)
+           return res.status(404).json({ status: false, msg: `Requested user id not found`})
+
+      await User.findByIdAndDelete(id)
+
+    res.status(201).json({ status: true, msg: "Successfully deleted existing user data"})
 }
 
 module.exports = {readAll,readSingle,createUser,updateUser,deleteUser}
